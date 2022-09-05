@@ -85,22 +85,39 @@ module.exports.deleteUser = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   const id = req.params.id;
 
-  const user = users.find(user => {
-    if (user._id == id) {
+  let me = users.find(user3 => {
+    if (user3._id == id) {
       const updateUser = {
-        name: req.body.name || user.name,
-        address: req.body.address || user.address,
-        phone: req.body.phone || user.phone,
-        gender: req.body.gender || user.gender,
-        photoUrl: req.body.photoUrl || user.photoUrl,
+        name: req.body.name || user3.name,
+        address: req.body.address || user3.address,
+        phone: req.body.phone || user3.phone,
+        gender: req.body.gender || user3.gender,
+        photoUrl: req.body.photoUrl || user3.photoUrl,
       }
-      console.log(updateUser);
-      res.setHeader("Content-Type", "application/json");
-      res.json({ message: updateUser });
-    } else {
-      res.json({message: "user not Found to update data!"});
+
+      const data2 = fs.readFileSync(
+        __dirname + "/users.json",
+        function (err, data) {}
+      );
+
+      const users2 = JSON.parse(data2);
+
+      const newUsers = [...users2, updateUser];
+
+      let data = JSON.stringify(newUsers, null, 2);
+      console.log(data);
+
+  // fs.writeFile(__dirname + "/users.json", data, (errors) => {
+  //   if (errors) return console.error(errors);
+  // });
+  // res.status(200).json({ status: 200, message: "Success!" });
+      // res.send(updateUser);
     }
   });
+
+  if (me == null) {
+    res.json({ message: "please provide a valid id" });
+  }
 };
 
 
